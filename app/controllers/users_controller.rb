@@ -6,8 +6,10 @@ class UsersController < ApplicationController
       user = User.create(user_params)
       if user.save
          redirect_to user_path(user.id)
+         flash[:success] = "Welcome, #{user.email}"
       else
          redirect_to "/register"
+         flash[:error] = user.errors.full_messages    
       end   
    end
 
@@ -18,6 +20,6 @@ class UsersController < ApplicationController
    private
 
    def user_params
-      params.require(:user).permit(:name, :email)
+      params.require(:user).permit(:name, :email, :password, :password_confirmation)
    end
 end

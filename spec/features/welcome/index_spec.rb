@@ -74,4 +74,10 @@ RSpec.describe 'landing page' do
       end
     end
   end
+
+  describe '#user login' do
+    it 'has link to log in as an existing user' do
+      
+    end
+  end
 end
