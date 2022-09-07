@@ -98,7 +98,7 @@ RSpec.describe 'landing page' do
   end
 
   describe "#log_in sad_path" do
-    it 'should fail to log in if credentials are incorrect' do
+    it 'should fail to log in if email credentials are incorrect' do
       user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
 
       visit '/'
@@ -109,6 +109,24 @@ RSpec.describe 'landing page' do
 
       fill_in :email, with: 'mikegmail.com'
       fill_in :password, with: 'test123'
+
+      click_on('Log In')
+
+      expect(current_path).to eq(login_path)
+      expect(page).to have_content("Invalid Credentials")
+    end
+
+    it 'should fail to log in if password credentials are incorrect' do
+      user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
+
+      visit '/'
+
+      click_link('Log in as an existing user')
+
+      expect(current_path).to eq(login_path)
+
+      fill_in :email, with: 'mikegmail.com'
+      fill_in :password, with: 'test'
 
       click_on('Log In')
 
