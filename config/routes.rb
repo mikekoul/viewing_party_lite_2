@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   get '/', to: 'welcome#index'
+  get '/login', to: 'users#login_form'
+  post '/login', to: 'users#login_user'
   get '/register', to: 'users#new'
   get '/dashboard', to: 'users#show'
   get '/users/:user_id/movies/:id/viewing_party/new', to: 'viewing_party#new'
