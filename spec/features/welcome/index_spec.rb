@@ -75,13 +75,25 @@ RSpec.describe 'landing page' do
     end
   end
 
-  describe '#user login' do
+  describe '#user login happy path' do
     it 'has link to log in as an existing user' do
       user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
 
       visit '/'
 
       expect(page).to have_link('Log in as an existing user')
+
+      click_link('Log in as an existing user')
+
+      expect(current_path).to eq(login_path)
+
+      fill_in :email, with: 'mike@gmail.com'
+      fill_in :password, with: 'test123'
+
+      click_on('Log In')
+
+      expect(current_path).to eq(user_path(user.id))
+      expect(page).to have_content("Welcome, #{user.email}")
     end
   end
 end
