@@ -70,7 +70,7 @@ RSpec.describe 'landing page' do
 
         click_link("cidlou@gmail.com's Dashboard")
 
-        expect(current_path).to eq(user_path(user_1.id))
+        expect(current_path).to eq(users_path(user_1.id))
       end
     end
   end
@@ -92,7 +92,7 @@ RSpec.describe 'landing page' do
 
       click_on('Log In')
 
-      expect(current_path).to eq(user_path(user.id))
+      expect(current_path).to eq(users_path(user.id))
       expect(page).to have_content("Welcome, #{user.email}")
     end
   end
@@ -132,6 +132,21 @@ RSpec.describe 'landing page' do
 
       expect(current_path).to eq(login_path)
       expect(page).to have_content("Invalid Credentials")
+    end
+  end
+
+  describe '#logged in user functions' do
+    before(:each) do 
+      user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
+      visit '/'
+      click_link('Log in as an existing user')
+      fill_in :email, with: 'mike@gmail.com'
+      fill_in :password, with: 'test123'
+      click_on('Log In')
+    end
+    
+    it 'when logged in I no longer see a link to long in or create an account but I do see a link to log out' do
+      expect(page).to have_content("You are logged in")
     end
   end
 end
