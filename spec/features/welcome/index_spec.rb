@@ -37,9 +37,9 @@ RSpec.describe 'landing page' do
     end
 
     it 'displays all exisiting users by email address' do
-      user_1 = User.create!(name: 'Cindy Lou', email: 'cidlou@gmail.com')
-      user_2 = User.create!(name: 'David Smith', email: 'daves@gmail.com')
-      user_3 = User.create!(name: 'Mary Jones', email: 'maryjonesu@gmail.com')
+      user_1 = User.create!(name: 'Cindy Lou', email: 'cidlou@gmail.com', password: "test123")
+      user_2 = User.create!(name: 'David Smith', email: 'daves@gmail.com', password: "test123")
+      user_3 = User.create!(name: 'Mary Jones', email: 'maryjonesu@gmail.com', password: "test123")
 
       visit '/'
 
@@ -60,9 +60,9 @@ RSpec.describe 'landing page' do
     end
 
     it 'each users email is a link to their specific dashboard' do
-      user_1 = User.create!(name: 'Cindy Lou', email: 'cidlou@gmail.com')
-      user_2 = User.create!(name: 'David Smith', email: 'daves@gmail.com')
-      user_3 = User.create!(name: 'Mary Jones', email: 'maryjonesu@gmail.com')
+      user_1 = User.create!(name: 'Cindy Lou', email: 'cidlou@gmail.com', password: "test123")
+      user_2 = User.create!(name: 'David Smith', email: 'daves@gmail.com', password: "test123")
+      user_3 = User.create!(name: 'Mary Jones', email: 'maryjonesu@gmail.com', password: "test123")
 
       visit '/'
       
@@ -70,7 +70,7 @@ RSpec.describe 'landing page' do
 
         click_link("cidlou@gmail.com's Dashboard")
 
-        expect(current_path).to eq(user_path(user_1.id))
+        expect(current_path).to eq(dashboard_path)
       end
     end
   end
@@ -92,7 +92,7 @@ RSpec.describe 'landing page' do
 
       click_on('Log In')
 
-      expect(current_path).to eq(user_path(user.id))
+      expect(current_path).to eq(users_path(user.id))
       expect(page).to have_content("Welcome, #{user.email}")
     end
   end
@@ -132,6 +132,39 @@ RSpec.describe 'landing page' do
 
       expect(current_path).to eq(login_path)
       expect(page).to have_content("Invalid Credentials")
+    end
+  end
+
+  describe '#logged into session user functions root page' do
+    it 'when logged into a session I no longer see a link to long in or create an account but I do see a link to log out' do
+      user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
+      visit root_path
+      click_link('Log in as an existing user')
+      fill_in :email, with: 'mike@gmail.com'
+      fill_in :password, with: 'test123'
+      click_on('Log In')
+
+      expect(page).to have_content("You are logged in")
+      expect(page).to_not have_button('Create New User')
+      expect(page).to_not have_link('Log in as an existing user')
+    end
+
+    it 'displays button to log out when session successful, click button to log out and see create new user and log in link have returned' do
+      user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
+      visit root_path
+      click_link('Log in as an existing user')
+      fill_in :email, with: 'mike@gmail.com'
+      fill_in :password, with: 'test123'
+      click_on('Log In')
+
+      expect(page).to have_button('Log Out')
+
+      click_button("Log Out")
+
+      expect(current_path).to eq(root_path)
+      expect(page).to have_button('Create New User')
+      expect(page).to have_link('Log in as an existing user')
+      expect(page).to_not have_content("You are logged in")
     end
   end
 end

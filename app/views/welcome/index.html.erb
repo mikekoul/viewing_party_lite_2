@@ -2,12 +2,19 @@
 <br>
 <br>
 <br>
+<% if current_user %>
+  <center>
+  <p>You are logged in<p><br>
+  <%= button_to "Log Out", '/logout', method: :delete %>
+  <center>
+<% else %>
 <center><h3> <%= button_to 'Create New User', '/register', method: :get  %><h3><br>
 <h3> <%= link_to 'Log in as an existing user', '/login', method: :get %><h3>
 <center><br>
+<% end %>
 <center><p>Exisiting Users:</p><center>
   <% @users.each_with_index do |user, index| %>
     <div id="users<%= index %>">
-      <center><p> <%= link_to "#{user.email}'s Dashboard", user_path(user.id) %></p><center>
+      <center><p> <%= link_to "#{user.email}'s Dashboard", users_path(user.id) %></p><center>
     </div>
   <% end %>
