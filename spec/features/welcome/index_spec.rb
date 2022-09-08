@@ -44,33 +44,18 @@ RSpec.describe 'landing page' do
       visit '/'
 
       within "#users0" do
-        expect(page).to have_link("cidlou@gmail.com's Dashboard")
-        expect(page).to_not have_link("daves@gmail.com's Dashboard")
+        expect(page).to have_content("cidlou@gmail.com's Dashboard")
+        expect(page).to_not have_content("daves@gmail.com's Dashboard")
       end
 
       within "#users1" do
-        expect(page).to have_link("daves@gmail.com's Dashboard")
-        expect(page).to_not have_link("maryjonesu@gmail.com's Dashboard")
+        expect(page).to have_content("daves@gmail.com's Dashboard")
+        expect(page).to_not have_content("maryjonesu@gmail.com's Dashboard")
       end
 
       within "#users2" do
-        expect(page).to have_link("maryjonesu@gmail.com's Dashboard")
-        expect(page).to_not have_link("cidlou@gmail.com's Dashboard")
-      end
-    end
-
-    it 'each users email is a link to their specific dashboard' do
-      user_1 = User.create!(name: 'Cindy Lou', email: 'cidlou@gmail.com', password: "test123")
-      user_2 = User.create!(name: 'David Smith', email: 'daves@gmail.com', password: "test123")
-      user_3 = User.create!(name: 'Mary Jones', email: 'maryjonesu@gmail.com', password: "test123")
-
-      visit '/'
-      
-      within "#users0" do
-
-        click_link("cidlou@gmail.com's Dashboard")
-
-        expect(current_path).to eq(dashboard_path)
+        expect(page).to have_content("maryjonesu@gmail.com's Dashboard")
+        expect(page).to_not have_content("cidlou@gmail.com's Dashboard")
       end
     end
   end
@@ -165,6 +150,50 @@ RSpec.describe 'landing page' do
       expect(page).to have_button('Create New User')
       expect(page).to have_link('Log in as an existing user')
       expect(page).to_not have_content("You are logged in")
+    end
+  end
+
+  describe '#authorization' do
+      it 'As a visitor I do not see the section for exisiting users' do
+
+      visit root_path
+
+      expect(page).to have_button('Create New User')
+      expect(page).to have_link('Log in as an existing user')
+      expect(page).to have_content('Log in or Register to experience Viewing Party Lite')
+      expect(page).to_not have_content("You are logged in")
+      expect(page).to_not have_content("Exisiting Users")
+    end
+
+    it 'As a registered visitor I see the section for exisiting users' do
+      
+      user_1 = User.create!(name: 'Cindy Lou', email: 'cidlou@gmail.com', password: "test123")
+      user_2 = User.create!(name: 'David Smith', email: 'daves@gmail.com', password: "test123")
+      user_3 = User.create!(name: 'Mary Jones', email: 'maryjonesu@gmail.com', password: "test123")
+      user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
+      visit root_path
+      click_link('Log in as an existing user')
+      fill_in :email, with: 'mike@gmail.com'
+      fill_in :password, with: 'test123'
+      click_on('Log In')
+      visit root_path
+
+      expect(page).to have_content('Exisiting Users')
+
+      within "#users0" do
+        expect(page).to have_content("cidlou@gmail.com's Dashboard")
+        expect(page).to_not have_content("daves@gmail.com's Dashboard")
+      end
+
+      within "#users1" do
+        expect(page).to have_content("daves@gmail.com's Dashboard")
+        expect(page).to_not have_content("maryjonesu@gmail.com's Dashboard")
+      end
+
+      within "#users2" do
+        expect(page).to have_content("maryjonesu@gmail.com's Dashboard")
+        expect(page).to_not have_content("cidlou@gmail.com's Dashboard")
+      end
     end
   end
 end
