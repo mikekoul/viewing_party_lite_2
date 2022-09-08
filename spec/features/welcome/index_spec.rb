@@ -135,18 +135,18 @@ RSpec.describe 'landing page' do
     end
   end
 
-  describe '#logged in user functions' do
-    before(:each) do 
-      user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
-      visit '/'
+  describe '#logged into session user functions' do
+    it 'when logged into a session I no longer see a link to long in or create an account but I do see a link to log out' do
+      @user = User.create!(name: 'Mike Smith', email: 'mike@gmail.com', password: "test123")
+      visit root_path
       click_link('Log in as an existing user')
       fill_in :email, with: 'mike@gmail.com'
       fill_in :password, with: 'test123'
       click_on('Log In')
-    end
-    
-    it 'when logged in I no longer see a link to long in or create an account but I do see a link to log out' do
+
       expect(page).to have_content("You are logged in")
+      expect(page).to_not have_button('Create New User')
+      expect(page).to_not have_link('Log in as an existing user')
     end
   end
 end
