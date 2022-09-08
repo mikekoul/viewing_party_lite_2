@@ -3,7 +3,10 @@
 <br>
 <br>
 <% if current_user %>
-  <center><p>You are logged in<p><center>
+  <center>
+  <p>You are logged in<p><br>
+  <%= button_to "Log Out", '/logout', method: :delete %>
+  <center>
 <% else %>
 <center><h3> <%= button_to 'Create New User', '/register', method: :get  %><h3><br>
 <h3> <%= link_to 'Log in as an existing user', '/login', method: :get %><h3>
